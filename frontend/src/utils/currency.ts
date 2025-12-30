@@ -22,7 +22,7 @@ export const CurrencyConfigs: Record<CurrencyCode, CurrencyConfig> = {
 export function formatCurrency(amount: string | number, code: CurrencyCode): string {
   const config = CurrencyConfigs[code] ?? CurrencyConfigs[CurrencyCode.CNY];
   const decimal = new Decimal(amount);
-  return `${config.symbol}${decimal.toFixed(config.decimalPlaces)}`;
+  return `${decimal.toFixed(config.decimalPlaces)}`;
 }
 
 export function formatAmount(amount: string | number, decimalPlaces: number = 2): string {

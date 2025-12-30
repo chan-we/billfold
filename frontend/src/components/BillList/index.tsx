@@ -1,22 +1,22 @@
-import React from 'react';
-import { Table, Tag, Button, Space, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
-import { Bill, BillType, getCategoryLabel, CurrencySymbols } from '@/types/bill';
-import { formatCurrency } from '@/utils/currency';
-import styles from './BillList.module.css';
+import React from 'react'
+import { Table, Tag, Button, Space, Tooltip } from 'antd'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
+import { Bill, BillType, getCategoryLabel, CurrencySymbols } from '@/types/bill'
+import { formatCurrency } from '@/utils/currency'
+import styles from './BillList.module.css'
 
 interface BillListProps {
-  bills: Bill[];
-  loading?: boolean;
+  bills: Bill[]
+  loading?: boolean
   pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-  };
-  onPageChange: (page: number, pageSize: number) => void;
-  onEdit?: (bill: Bill) => void;
-  onDelete?: (bill: Bill) => void;
+    current: number
+    pageSize: number
+    total: number
+  }
+  onPageChange: (page: number, pageSize: number) => void
+  onEdit?: (bill: Bill) => void
+  onDelete?: (bill: Bill) => void
 }
 
 export const BillList: React.FC<BillListProps> = ({
@@ -60,9 +60,16 @@ export const BillList: React.FC<BillListProps> = ({
       width: 150,
       align: 'right',
       render: (amount: string, record: Bill) => (
-        <span className={record.billType === BillType.EXPENSE ? styles.expense : styles.income}>
+        <span
+          className={
+            record.billType === BillType.EXPENSE
+              ? styles.expense
+              : styles.income
+          }
+        >
           {record.billType === BillType.EXPENSE ? '-' : '+'}
-          {CurrencySymbols[record.currencyCode]}{formatCurrency(amount)}
+          {CurrencySymbols[record.currencyCode]}
+          {formatCurrency(amount, record.currencyCode)}
         </span>
       ),
     },
@@ -85,22 +92,22 @@ export const BillList: React.FC<BillListProps> = ({
       width: 120,
       fixed: 'right',
       render: (_: unknown, record: Bill) => (
-        <Space size="small">
+        <Space size='small'>
           {onEdit && (
-            <Tooltip title="编辑">
+            <Tooltip title='编辑'>
               <Button
-                type="text"
-                size="small"
+                type='text'
+                size='small'
                 icon={<EditOutlined />}
                 onClick={() => onEdit(record)}
               />
             </Tooltip>
           )}
           {onDelete && (
-            <Tooltip title="删除">
+            <Tooltip title='删除'>
               <Button
-                type="text"
-                size="small"
+                type='text'
+                size='small'
                 danger
                 icon={<DeleteOutlined />}
                 onClick={() => onDelete(record)}
@@ -110,17 +117,17 @@ export const BillList: React.FC<BillListProps> = ({
         </Space>
       ),
     },
-  ];
+  ]
 
   const handleTableChange = (paginationConfig: TablePaginationConfig) => {
-    onPageChange(paginationConfig.current || 1, paginationConfig.pageSize || 20);
-  };
+    onPageChange(paginationConfig.current || 1, paginationConfig.pageSize || 20)
+  }
 
   return (
     <Table<Bill>
       columns={columns}
       dataSource={bills}
-      rowKey="id"
+      rowKey='id'
       loading={loading}
       pagination={{
         current: pagination.current,
@@ -135,5 +142,5 @@ export const BillList: React.FC<BillListProps> = ({
       scroll={{ x: 800 }}
       className={styles.table}
     />
-  );
-};
+  )
+}
