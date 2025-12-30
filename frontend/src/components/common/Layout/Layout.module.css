@@ -1,0 +1,28 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+}
+
+.main {
+  flex: 1;
+  padding: 16px;
+}
+
+.desktop {
+  flex-direction: row;
+}
+
+.desktop .main {
+  margin-left: 200px;
+  max-width: calc(100% - 200px);
+  padding: 24px;
+}
+
+.mobile {
+  flex-direction: column;
+}
+
+.mobile .main {
+  padding: 12px;
+  padding-bottom: 80px; /* Space for bottom nav */
+}

@@ -1,0 +1,22 @@
+{
+  "name": "billfold",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Personal bill management application",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "backend:dev": "pnpm --filter backend dev",
+    "frontend:dev": "pnpm --filter frontend dev"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "packageManager": "pnpm@8.15.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

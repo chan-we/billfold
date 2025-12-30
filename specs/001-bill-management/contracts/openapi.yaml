@@ -1,0 +1,696 @@
+openapi: 3.0.3
+info:
+  title: Billfold API - 账单管理
+  description: 账单明细管理功能的API接口定义
+  version: 1.0.0
+  contact:
+    name: Billfold Team
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Bills
+    description: 账单明细CRUD操作
+  - name: Statistics
+    description: 统计报表
+
+paths:
+  /bills:
+    get:
+      tags:
+        - Bills
+      summary: 获取账单列表
+      description: 分页获取当前用户的账单列表，支持筛选和排序
+      operationId: getBills
+      parameters:
+        - name: page
+          in: query
+          description: 页码，从1开始
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: pageSize
+          in: query
+          description: 每页条数
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: startDate
+          in: query
+          description: 开始日期 (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: 结束日期 (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: billType
+          in: query
+          description: 账单类型筛选
+          schema:
+            $ref: '#/components/schemas/BillType'
+        - name: billCategory
+          in: query
+          description: 账单类别筛选
+          schema:
+            type: string
+        - name: currencyCode
+          in: query
+          description: 货币类型筛选
+          schema:
+            $ref: '#/components/schemas/CurrencyCode'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Bills
+      summary: 创建账单
+      description: 创建一条新的账单记录
+      operationId: createBill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBillRequest'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /bills/{id}:
+    get:
+      tags:
+        - Bills
+      summary: 获取账单详情
+      description: 获取单条账单的详细信息
+      operationId: getBillById
+      parameters:
+        - $ref: '#/components/parameters/BillId'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Bills
+      summary: 更新账单
+      description: 更新账单的全部信息
+      operationId: updateBill
+      parameters:
+        - $ref: '#/components/parameters/BillId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBillRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Bills
+      summary: 删除账单
+      description: 软删除一条账单记录
+      operationId: deleteBill
+      parameters:
+        - $ref: '#/components/parameters/BillId'
+      responses:
+        '204':
+          description: 删除成功
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /statistics/summary:
+    get:
+      tags:
+        - Statistics
+      summary: 获取统计摘要
+      description: 获取指定时间范围内的收支汇总
+      operationId: getStatisticsSummary
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          description: 开始日期 (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          description: 结束日期 (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: currencyCode
+          in: query
+          description: 货币类型（不同货币分开统计）
+          schema:
+            $ref: '#/components/schemas/CurrencyCode'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsSummaryResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /statistics/category:
+    get:
+      tags:
+        - Statistics
+      summary: 获取分类统计
+      description: 获取各类别的支出/收入占比
+      operationId: getStatisticsByCategory
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: billType
+          in: query
+          required: true
+          description: 统计收入还是支出
+          schema:
+            $ref: '#/components/schemas/BillType'
+        - name: currencyCode
+          in: query
+          schema:
+            $ref: '#/components/schemas/CurrencyCode'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryStatisticsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /statistics/trend:
+    get:
+      tags:
+        - Statistics
+      summary: 获取趋势统计
+      description: 获取按月/日聚合的收支趋势数据
+      operationId: getStatisticsTrend
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: granularity
+          in: query
+          required: true
+          description: 聚合粒度
+          schema:
+            type: string
+            enum: [day, week, month]
+        - name: currencyCode
+          in: query
+          schema:
+            $ref: '#/components/schemas/CurrencyCode'
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrendStatisticsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /bill-types:
+    get:
+      tags:
+        - Bills
+      summary: 获取账单类型列表
+      description: 获取所有可用的账单类型和类别
+      operationId: getBillTypes
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillTypesResponse'
+
+  /currencies:
+    get:
+      tags:
+        - Bills
+      summary: 获取货币列表
+      description: 获取所有支持的货币类型
+      operationId: getCurrencies
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenciesResponse'
+
+components:
+  parameters:
+    BillId:
+      name: id
+      in: path
+      required: true
+      description: 账单ID
+      schema:
+        type: integer
+        format: int64
+
+  schemas:
+    BillType:
+      type: string
+      enum:
+        - EXPENSE
+        - INCOME
+      description: 账单类型（支出/收入）
+
+    CurrencyCode:
+      type: string
+      enum:
+        - CNY
+        - USD
+        - EUR
+        - GBP
+        - JPY
+        - HKD
+        - TWD
+        - KRW
+      description: 货币代码 (ISO 4217)
+
+    Bill:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: 账单ID
+        amount:
+          type: string
+          description: 金额（字符串避免精度丢失）
+          example: "128.50"
+        date:
+          type: string
+          format: date
+          description: 账单日期
+          example: "2025-12-30"
+        billType:
+          $ref: '#/components/schemas/BillType'
+        billCategory:
+          type: string
+          description: 账单类别
+          example: "food"
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        note:
+          type: string
+          description: 备注
+          maxLength: 500
+          example: "午餐"
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间
+
+    CreateBillRequest:
+      type: object
+      required:
+        - amount
+        - date
+        - billType
+        - billCategory
+        - currencyCode
+      properties:
+        amount:
+          type: string
+          description: 金额，必须大于0
+          pattern: '^\d+(\.\d{1,2})?$'
+          example: "128.50"
+        date:
+          type: string
+          format: date
+          description: 账单日期
+        billType:
+          $ref: '#/components/schemas/BillType'
+        billCategory:
+          type: string
+          description: 账单类别
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        note:
+          type: string
+          maxLength: 500
+          description: 备注（可选）
+
+    UpdateBillRequest:
+      type: object
+      required:
+        - amount
+        - date
+        - billType
+        - billCategory
+        - currencyCode
+      properties:
+        amount:
+          type: string
+          pattern: '^\d+(\.\d{1,2})?$'
+        date:
+          type: string
+          format: date
+        billType:
+          $ref: '#/components/schemas/BillType'
+        billCategory:
+          type: string
+        currencyCode:
+          $ref: '#/components/schemas/CurrencyCode'
+        note:
+          type: string
+          maxLength: 500
+
+    BillResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "success"
+        data:
+          $ref: '#/components/schemas/Bill'
+
+    BillListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: "success"
+        data:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Bill'
+            total:
+              type: integer
+              description: 总记录数
+            page:
+              type: integer
+              description: 当前页码
+            pageSize:
+              type: integer
+              description: 每页条数
+            totalPages:
+              type: integer
+              description: 总页数
+
+    StatisticsSummaryResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            totalIncome:
+              type: string
+              description: 总收入
+              example: "10000.00"
+            totalExpense:
+              type: string
+              description: 总支出
+              example: "8000.00"
+            balance:
+              type: string
+              description: 结余
+              example: "2000.00"
+            currencyCode:
+              $ref: '#/components/schemas/CurrencyCode'
+            startDate:
+              type: string
+              format: date
+            endDate:
+              type: string
+              format: date
+
+    CategoryStatisticsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            billType:
+              $ref: '#/components/schemas/BillType'
+            total:
+              type: string
+              description: 该类型总金额
+            categories:
+              type: array
+              items:
+                type: object
+                properties:
+                  category:
+                    type: string
+                    description: 类别
+                  categoryName:
+                    type: string
+                    description: 类别中文名
+                  amount:
+                    type: string
+                    description: 金额
+                  percentage:
+                    type: number
+                    format: float
+                    description: 占比百分比
+                    example: 25.5
+
+    TrendStatisticsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            granularity:
+              type: string
+              enum: [day, week, month]
+            points:
+              type: array
+              items:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    description: 日期标签
+                    example: "2025-12"
+                  income:
+                    type: string
+                    description: 收入金额
+                  expense:
+                    type: string
+                    description: 支出金额
+
+    BillTypesResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            expense:
+              type: array
+              items:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    example: "food"
+                  label:
+                    type: string
+                    example: "餐饮"
+                  icon:
+                    type: string
+                    example: "coffee"
+            income:
+              type: array
+              items:
+                type: object
+                properties:
+                  value:
+                    type: string
+                  label:
+                    type: string
+                  icon:
+                    type: string
+
+    CurrenciesResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "CNY"
+              name:
+                type: string
+                example: "人民币"
+              symbol:
+                type: string
+                example: "¥"
+
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: 错误代码
+        message:
+          type: string
+          description: 错误信息
+        details:
+          type: object
+          description: 详细错误信息（可选）
+
+  responses:
+    BadRequest:
+      description: 请求参数错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 400
+            message: "请填写金额"
+            details:
+              field: "amount"
+              reason: "required"
+
+    Unauthorized:
+      description: 未授权
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 401
+            message: "请先登录"
+
+    NotFound:
+      description: 资源不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: 404
+            message: "账单不存在"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT认证
+
+security:
+  - bearerAuth: []

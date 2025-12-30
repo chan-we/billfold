@@ -1,0 +1,14 @@
+.table {
+  background: #fff;
+  border-radius: 8px;
+}
+
+.expense {
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+.income {
+  color: #52c41a;
+  font-weight: 500;
+}

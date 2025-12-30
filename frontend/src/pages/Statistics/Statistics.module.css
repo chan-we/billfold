@@ -1,0 +1,22 @@
+.container {
+  padding: 16px;
+}
+
+.title {
+  margin-bottom: 16px;
+}
+
+.card {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filters {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding: 8px;
+  }
+}
