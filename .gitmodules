@@ -1,0 +1,3 @@
+[submodule "fence-knowledge"]
+	path = fence-knowledge
+	url = git@github.com:chan-we/fence-knowledge.git

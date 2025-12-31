@@ -10,7 +10,12 @@
       "Bash(git rev-parse:*)",
       "Bash(npm run start:dev:*)",
       "Bash(npm run dev:*)",
-      "Bash(pnpm run dev)"
+      "Bash(pnpm run dev)",
+      "Bash(/Users/ushi/Documents/my_code/mine/billfold/.specify/scripts/bash/update-agent-context.sh:*)",
+      "Bash(git submodule add:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(pnpm run:*)"
     ],
     "deny": [],
     "ask": []
