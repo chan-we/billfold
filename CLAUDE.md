@@ -5,6 +5,7 @@ Auto-generated from all feature plans. Last updated: 2025-12-30
 ## Active Technologies
 - TypeScript 5.x (Frontend & Backend) (002-login-guard)
 - MySQL (通过 TypeORM) (002-login-guard)
+- TypeScript 5.x (NestJS 10.x) + @nestjs/config ^4.0.2, @nestjs/typeorm ^10.0.1, class-validator, class-transformer (003-config-reader)
 
 - TypeScript 5.x (Frontend [EXTRACTED FROM ALL PLAN.MD FILES] Backend) (001-bill-management)
 
@@ -24,10 +25,10 @@ npm test && npm run lint
 TypeScript 5.x (Frontend [LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE] Backend): Follow standard conventions
 
 ## Recent Changes
+- 003-config-reader: Added TypeScript 5.x (NestJS 10.x) + @nestjs/config ^4.0.2, @nestjs/typeorm ^10.0.1, class-validator, class-transformer
 - 002-login-guard: Added TypeScript 5.x (Frontend & Backend)
 - 002-login-guard: Added TypeScript 5.x (Frontend & Backend)
 
-- 001-bill-management: Added TypeScript 5.x (Frontend [LAST 3 FEATURES AND WHAT THEY ADDED] Backend)
 
 <!-- MANUAL ADDITIONS START -->
 

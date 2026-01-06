@@ -1,20 +1,14 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-// 打印数据库连接配置（用于调试）
-console.log('========== Database Configuration ==========');
-console.log('DB_HOST:', process.env.DB_HOST || 'localhost');
-console.log('DB_PORT:', process.env.DB_PORT || '3306');
-console.log('DB_USERNAME:', process.env.DB_USERNAME || 'billfold_dev');
-console.log('DB_DATABASE:', process.env.DB_DATABASE || 'billfold');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('============================================');
+// This file is used for TypeORM CLI commands (migrations, etc.)
+// For runtime configuration, use configuration.ts with ConfigModule
 
 export const databaseConfig: TypeOrmModuleOptions = {
   type: 'mysql',
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '3306', 10),
-  username: process.env.DB_USERNAME || 'billfold_dev',
-  password: process.env.DB_PASSWORD || 'dev_password',
+  username: process.env.DB_USER || 'billfold_dev',
+  password: process.env.DB_PASS || 'dev_password',
   database: process.env.DB_DATABASE || 'billfold',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],

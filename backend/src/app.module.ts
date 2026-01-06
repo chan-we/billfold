@@ -4,36 +4,47 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BillModule } from './modules/bill/bill.module';
 import { StatisticsModule } from './modules/statistics/statistics.module';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
+import {
+  databaseConfig,
+  redisConfig,
+  cloudflareConfig,
+  securityConfig,
+} from './config/configuration';
+import { validate } from './config/config.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      load: [databaseConfig, redisConfig, cloudflareConfig, securityConfig],
+      validate,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): MysqlConnectionOptions => {
-        const host = configService.get<string>('DB_HOST', 'localhost');
-        const port = configService.get<number>('DB_PORT', 3306);
-        const username = configService.get<string>('DB_USERNAME', 'billfold_dev');
-        const database = configService.get<string>('DB_DATABASE', 'billfold');
+        const host = configService.get<string>('database.host', 'localhost');
+        const port = configService.get<number>('database.port', 3306);
+        const username = configService.get<string>(
+          'database.user',
+          'billfold_dev',
+        );
+        const password = configService.get<string>(
+          'database.pass',
+          'dev_password',
+        );
+        const database = configService.get<string>(
+          'database.database',
+          'billfold',
+        );
         const nodeEnv = configService.get<string>('NODE_ENV');
-
-        console.log('========== Database Configuration ==========');
-        console.log('DB_HOST:', host);
-        console.log('DB_PORT:', port);
-        console.log('DB_USERNAME:', username);
-        console.log('DB_DATABASE:', database);
-        console.log('NODE_ENV:', nodeEnv);
-        console.log('============================================');
 
         return {
           type: 'mysql',
           host,
           port,
           username,
-          password: configService.get<string>('DB_PASSWORD', 'dev_password'),
+          password,
           database,
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           migrations: [__dirname + '/migrations/*{.ts,.js}'],
