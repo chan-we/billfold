@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Select, DatePicker, Button, Space } from 'antd';
 import { SearchOutlined, ClearOutlined } from '@ant-design/icons';
-import dayjs, { Dayjs } from 'dayjs';
-import { BillType } from '@/types/bill';
+import type { Dayjs } from 'dayjs';
+import { BillType, CurrencyCode } from '@/types/bill';
 import type { BillTypeOption, CurrencyOption, BillQueryParams } from '@/types/bill';
 import { billService } from '@/services/billService';
 import { useResponsive } from '@/hooks/useResponsive';
@@ -59,7 +59,7 @@ export const BillFilter: React.FC<BillFilterProps> = ({ onFilter, loading = fals
     }
 
     if (values.currencyCode) {
-      params.currencyCode = values.currencyCode as string;
+      params.currencyCode = values.currencyCode as CurrencyCode;
     }
 
     onFilter(params);

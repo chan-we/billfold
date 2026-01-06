@@ -16,7 +16,6 @@ export const CategoryPieChart: React.FC<CategoryPieChartProps> = ({
   title,
   data,
   loading = false,
-  color = '#1890ff',
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);

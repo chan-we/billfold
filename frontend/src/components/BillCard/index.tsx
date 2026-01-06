@@ -47,7 +47,7 @@ export const BillCard: React.FC<BillCardProps> = ({
               }
             >
               {bill.billType === BillType.EXPENSE ? '-' : '+'}
-              {CurrencySymbols[bill.currencyCode]}{formatCurrency(bill.amount)}
+              {CurrencySymbols[bill.currencyCode]}{formatCurrency(bill.amount, bill.currencyCode)}
             </span>
           </div>
           <div className={styles.content}>
