@@ -15,7 +15,8 @@
       "Bash(git submodule add:*)",
       "Bash(npm run build:*)",
       "Bash(npx tsc --noEmit)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
